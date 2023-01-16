@@ -1,6 +1,7 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
+    <TrPill label="Trying here" state="regular"></TrPill>
     <p>
       For a guide and recipes on how to configure / customize this project,<br />
       check out the
@@ -103,8 +104,12 @@
 </template>
 
 <script>
+import TrPill from "../stories/Pill.vue";
 export default {
   name: "HelloWorld",
+  components: {
+    TrPill,
+  },
   props: {
     msg: String,
   },

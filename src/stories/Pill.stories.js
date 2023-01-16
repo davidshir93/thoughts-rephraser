@@ -8,9 +8,9 @@ export default {
   argTypes: {
     backgroundColor: { control: "color" },
     onClick: {},
-    size: {
+    state: {
       control: { type: "select" },
-      options: ["small", "medium", "large"],
+      options: ["regular", "hover", "crossed"],
     },
   },
 };
@@ -30,23 +30,22 @@ const Template = (args) => ({
 export const Primary = Template.bind({});
 // More on args: https://storybook.js.org/docs/vue/writing-stories/args
 Primary.args = {
-  primary: true,
-  label: "Button",
+  label: "Catastrophizing",
 };
 
-export const Secondary = Template.bind({});
-Secondary.args = {
-  label: "Button",
-};
+// export const Secondary = Template.bind({});
+// Secondary.args = {
+//   label: "Button",
+// };
 
-export const Large = Template.bind({});
-Large.args = {
-  size: "large",
-  label: "Button",
-};
+// export const Large = Template.bind({});
+// Large.args = {
+//   size: "large",
+//   label: "Button",
+// };
 
-export const Small = Template.bind({});
-Small.args = {
-  size: "small",
-  label: "Button",
-};
+// export const Small = Template.bind({});
+// Small.args = {
+//   size: "small",
+//   label: "Button",
+// };
