@@ -1,18 +1,31 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <ThoughtCard
+      id="1"
+      original="String"
+      rephrased="String"
+      :distortions="dis"
+    />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import ThoughtCard from "@/components/ThoughtCard.vue";
 
 export default {
   name: "HomeView",
   components: {
-    HelloWorld,
+    ThoughtCard,
+  },
+  data() {
+    return {
+      dis: {
+        blackAndWhiteThinking: ["total", "at all", "never"],
+        catastrophizing: ["mess", "I'll never"],
+        overgeneralizing: ["at all", "never"],
+      },
+    };
   },
 };
 </script>

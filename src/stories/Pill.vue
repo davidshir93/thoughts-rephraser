@@ -34,6 +34,7 @@ export default {
     return {
       classes: computed(() => ({
         pill: true,
+        caption: true,
         [`pill--${props.state || "regular"}`]: true,
       })),
       style: computed(() => ({

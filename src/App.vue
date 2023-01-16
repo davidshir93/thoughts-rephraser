@@ -1,18 +1,78 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
+  <Navbar />
   <router-view />
 </template>
 
+<script>
+import Navbar from "./components/NavBar";
+
+export default {
+  components: { Navbar },
+};
+</script>
+
 <style lang="scss">
+@import url("https://fonts.googleapis.com/css?family=Roboto:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  max-width: 1312px;
+  margin: 0.66rem auto;
+  overflow-x: hidden !important;
+  padding: 1.33rem;
+  background-color: rgb(225, 245, 255);
+  border-radius: 1.33rem;
+  width: 100%;
+  height: calc(100vh - 2.33rem);
+  position: relative;
+}
+
+/* navbar TODO: STYLE THIS */
+nav {
+  display: flex;
+  align-items: center;
+}
+nav h1 {
+  margin-right: auto;
+}
+nav a,
+nav button,
+nav span {
+  margin-left: 20px;
+}
+nav a {
+  color: #444;
+  text-decoration: none;
+  font-weight: bold;
+}
+nav span {
+  color: #777;
+}
+button {
+  background: #00dba4;
+  border: 0;
+  padding: 6px 10px;
+  border-radius: 20px;
+  color: #fff;
+  cursor: pointer;
+}
+
+// TODO: Style this
+
+/* forms */
+label {
+  display: block;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+form button {
+  display: block;
+  margin-top: 20px;
 }
 
 nav {
@@ -44,22 +104,7 @@ h2 {
 
 .caption {
   font-size: 0.66rem;
-}
-
-#app {
-  font-family: "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
-    "Droid Sans", "Helvetica Neue", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  max-width: 1312px;
-  margin: 0.66rem auto;
-  overflow-x: hidden !important;
-  padding: 1.33rem;
-  background-color: rgb(225, 245, 255);
-  border-radius: 1.33rem;
-  width: 100%;
-  height: calc(100vh - 2.33rem);
-  position: relative;
+  line-height: 1rem;
 }
 
 /* On screens that are 870px or less */
