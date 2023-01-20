@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import "./pill.css";
+import "./pill.scss";
 import { reactive, computed } from "vue";
 
 export default {
