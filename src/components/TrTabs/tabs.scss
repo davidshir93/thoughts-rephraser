@@ -1,0 +1,21 @@
+@import url(../../../src/style.scss);
+* {
+  font-family: "Roboto", sans-serif;
+}
+.tabs-container {
+  display: flex;
+  .tab {
+    border-radius: 247px;
+    text-align: center;
+    width: fit-content;
+
+    background-color: white;
+    padding: 4px 16px;
+    border: 1px solid #000000;
+  }
+  .tab--hover,
+  .tab:hover {
+    background-color: var(--text-color);
+    color: var(--acccent-color);
+  }
+}

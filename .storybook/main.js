@@ -1,5 +1,3 @@
-import "!style-loader!css-loader!sass-loader!./style.scss";
-
 module.exports = {
   stories: [
     "../src/**/*.stories.mdx",

@@ -1,21 +1,28 @@
 <template>
-  <div class="thought-card">
-    <p>{{ text }}</p>
-    <TrPill
-      v-for="word in Object.keys(distortions)"
-      :key="word.id"
-      :label="word"
-      state="regular"
-    ></TrPill>
+  <div class="thoguhts-grid-container">
+    <div class="thought-card">
+      <TrTabs></TrTabs>
+      <p>{{ text }}</p>
+
+      <TrPill
+        v-for="word in Object.keys(distortions)"
+        :key="word.id"
+        :label="word"
+        state="regular"
+      ></TrPill>
+    </div>
   </div>
 </template>
 
 <script>
 import TrPill from "./TrPill/Pill.vue";
+import TrTabs from "./TrTabs/Tabs.vue";
+
 export default {
   name: "ThoughtCard",
   components: {
     TrPill,
+    TrTabs,
   },
   props: {
     id: Number,
@@ -37,6 +44,10 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 1rem;
+  width: 416px;
+  padding: 1.33rem;
+  background-color: var(--secondary-color);
+  border-radius: 1rem;
 }
 </style>

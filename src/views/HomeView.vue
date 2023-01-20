@@ -1,14 +1,16 @@
 <template>
   <div class="home">
     <TrButton :disabled="!user" label="Add A Thought" />
-    <ThoughtCard
-      v-for="thought in thoughts"
-      :key="thought.id"
-      :id="thought.id"
-      :original="thought.original"
-      :rephrased="thought.rephrased"
-      :distortions="thought.distortions"
-    />
+    <div class="thoguhts-grid-container">
+      <ThoughtCard
+        v-for="thought in thoughts"
+        :key="thought.id"
+        :id="thought.id"
+        :original="thought.original"
+        :rephrased="thought.rephrased"
+        :distortions="thought.distortions"
+      />
+    </div>
   </div>
 </template>
 
@@ -37,3 +39,11 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.thoguhts-grid-container {
+  display: flex;
+  gap: 1rem;
+  margin: 1.33rem 0;
+}
+</style>
