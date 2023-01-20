@@ -17,7 +17,7 @@
 <script>
 // @ is an alias to /src
 import ThoughtCard from "@/components/ThoughtCard.vue";
-import TrButton from "@/components/TrButton/Button.vue";
+import TrButton from "@/components/TrButton.vue";
 
 import { useStore } from "vuex";
 import { computed } from "vue";

@@ -11,11 +11,10 @@
 </template>
 
 <script>
-import "./button.scss";
 import { reactive, computed } from "vue";
 
 export default {
-  name: "my-button",
+  name: "TrButton",
 
   props: {
     label: {
@@ -63,3 +62,26 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+.tr-button {
+  padding: 12px 24px;
+  border-radius: 3rem;
+  border: 1px solid var(--text-color);
+}
+
+.tr-button:hover {
+  background-color: var(--text-color);
+  color: var(--bg-color);
+}
+
+.tr-button--primary {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+.tr-button--secondary {
+  color: #333;
+  background-color: transparent;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px inset;
+}
+</style>

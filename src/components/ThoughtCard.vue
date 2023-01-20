@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import TrPill from "./TrPill/Pill.vue";
-import TrTabs from "./TrTabs/Tabs.vue";
+import TrPill from "./TrPill.vue";
+import TrTabs from "./TrTabs.vue";
 
 export default {
   name: "ThoughtCard",

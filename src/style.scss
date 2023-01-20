@@ -5,10 +5,9 @@
   box-sizing: border-box;
   font-size: 24px;
   /*System Colors Defined Here*/
-  --text-color: #000000;
-  --secondary-color: #e2e2e2;
-  --acccent-color: #ffffff;
-  --bg-color: #f5bdff;
+  --text-color: #141414;
+  --secondary-color: #c5c5c5;
+  --bg-color: #f6f6f6;
 }
 
 #app {
@@ -16,7 +15,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: var(--main-text-color);
+  color: var(--text-color);
   max-width: 1312px;
   margin: 0.66rem auto;
   overflow-x: hidden !important;
@@ -105,6 +104,9 @@ p,
 .caption {
   font-size: 0.66rem;
   line-height: 1rem;
+  &.bold {
+    font-weight: 600;
+  }
 }
 
 /* On screens that are 870px or less */
