@@ -9,8 +9,8 @@
 }
 .pill--hover,
 .pill:hover {
-  color: white;
-  background: #000000;
+  background-color: var(--text-color);
+  color: var(--acccent-color);
 }
 .pill--crossed {
   text-decoration-line: line-through;

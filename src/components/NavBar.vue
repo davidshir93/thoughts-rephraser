@@ -7,12 +7,12 @@
         <router-link to="/">Home</router-link>
       </div>
       <!-- for logged in users -->
-      <div>
+      <div v-if="user">
         <span v-text="user"></span>
         <button @click="handleLogout">Logout</button>
       </div>
       <!-- for logged out users -->
-      <div>
+      <div v-else>
         <router-link to="/login">Login</router-link>
         <router-link to="/signup">Signup</router-link>
       </div>
@@ -38,7 +38,7 @@ export default {
     return {
       handleLogout,
       authIsReady,
-      user: computed(() => store.state.user.email),
+      user: computed(() => store.state.user?.email),
     };
   },
 };

@@ -1,0 +1,19 @@
+.tr-button {
+  padding: 12px 24px;
+  border-radius: 3rem;
+}
+
+.tr-button:hover {
+  background-color: var(--text-color);
+  color: var(--acccent-color);
+}
+
+.tr-button--primary {
+  color: white;
+  background-color: #1ea7fd;
+}
+.tr-button--secondary {
+  color: #333;
+  background-color: transparent;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px inset;
+}

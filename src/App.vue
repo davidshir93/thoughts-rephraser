@@ -1,12 +1,19 @@
 <template>
   <Navbar />
-  <router-view />
+  <router-view v-if="authIsReady" />
 </template>
 
 <script>
 import Navbar from "./components/NavBar";
+import { useStore } from "vuex";
+import { computed } from "vue";
 
 export default {
+  setup() {
+    const store = useStore();
+    const authIsReady = computed(() => store.state.authIsReady);
+    return { authIsReady };
+  },
   components: { Navbar },
 };
 </script>
@@ -20,7 +27,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: var(--main-text-color);
   max-width: 1312px;
   margin: 0.66rem auto;
   overflow-x: hidden !important;
@@ -91,6 +98,10 @@ nav {
 * {
   box-sizing: border-box;
   font-size: 24px;
+  // System Colors Defined Here
+  --text-color: #000000;
+  --acccent-color: #ffffff;
+  --bg-color: #f5bdff;
 }
 
 h1 {
@@ -100,6 +111,15 @@ h1 {
 
 h2 {
   font-size: 1.66rem;
+}
+
+p,
+.text {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 32px;
 }
 
 .caption {

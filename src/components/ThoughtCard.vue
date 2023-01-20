@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import TrPill from "../stories/Pill.vue";
+import TrPill from "./TrPill/Pill.vue";
 export default {
   name: "ThoughtCard",
   components: {
