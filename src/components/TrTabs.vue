@@ -4,7 +4,10 @@
       v-for="tab in localTabs"
       :key="tab.name"
       class="tab caption"
-      :class="{ active: tab.state === 'active', bold: tab.state === 'active' }"
+      :class="{
+        active: tab.state === 'active',
+        bold: tab.state === 'active',
+      }"
       @click="onClick(tab)"
     >
       {{ tab.displayName }}
@@ -13,7 +16,7 @@
 </template>
 
 <script>
-import { ref, reactive } from "vue";
+import { reactive } from "vue";
 
 export default {
   name: "TrPill",
@@ -45,16 +48,16 @@ export default {
 
   setup(props, { emit }) {
     props = reactive(props);
-    const localTabs = ref(props.tabs);
+    const localTabs = reactive(props.tabs);
     console.log(localTabs);
     return {
       localTabs,
       onClick(newTab) {
-        localTabs.value.find((tab) => tab.name == newTab.name).state = "active";
-        localTabs.value
+        localTabs.find((tab) => tab.name == newTab.name).state = "active";
+        localTabs
           .filter((tab) => tab.name !== newTab.name)
           .map((tab) => (tab.state = "inactive"));
-        emit("click", newTab);
+        emit("click", newTab.name);
       },
     };
   },
@@ -68,17 +71,17 @@ export default {
     text-align: center;
     width: fit-content;
     padding: 4px 16px;
+    cursor: pointer;
+    border-bottom: 2px solid var(--secondary-color);
+
+    transition: all 300ms ease-in-out;
+
     &.active {
       border-bottom: 2px solid var(--text-color);
     }
     &:hover {
       border-bottom: 2px solid var(--bg-color);
     }
-  }
-  .tab--hover,
-  .tab:hover {
-    // background-color: var(--text-color);
-    // color: var(--bg-color);
   }
 }
 </style>
