@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <TrButton :disabled="!user" label="Add A Thought" />
+    <new-thought-form></new-thought-form>
     <div class="thoguhts-grid-container">
       <ThoughtCard
         v-for="thought in thoughts"
@@ -18,7 +19,7 @@
 // @ is an alias to /src
 import ThoughtCard from "@/components/ThoughtCard.vue";
 import TrButton from "@/components/TrButton.vue";
-
+import NewThoughtForm from "@/components/NewThoughtForm.vue";
 import { useStore } from "vuex";
 import { computed } from "vue";
 export default {
@@ -36,6 +37,7 @@ export default {
   components: {
     ThoughtCard,
     TrButton,
+    NewThoughtForm,
   },
 };
 </script>
