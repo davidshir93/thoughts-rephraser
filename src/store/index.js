@@ -48,6 +48,9 @@ const store = createStore({
     setAuthIsReady(state, payload) {
       state.authIsReady = payload;
     },
+    addThought(state, payload) {
+      state.thoughts.unshift(payload);
+    },
   },
   actions: {
     async signup(context, { email, password }) {
@@ -73,6 +76,16 @@ const store = createStore({
       console.log("logout user", context.state.user);
       await signOut(auth);
       context.commit("setUser", null);
+    },
+    addThought(context, { original, rephrased, distortions }) {
+      // debugger;
+      const newThoguht = {
+        id: new Date().valueOf(),
+        original: original,
+        rephrased: rephrased,
+        distortions: distortions,
+      };
+      context.commit("addThought", newThoguht);
     },
   },
   modules: {},

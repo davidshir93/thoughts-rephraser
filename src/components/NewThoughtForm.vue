@@ -3,28 +3,35 @@
     <div class="inputs-container">
       <div class="right-side original">
         <p>Original</p>
+        <p class="caption">
+          Write down what you are thinking now, no filters please :)
+        </p>
         <textarea
           name="original"
           id="original"
           rows="10"
-          @input="onInputChange"
+          @input="onOriginalInputChange"
         ></textarea>
       </div>
       <div class="left-side rephrased">
         <p>Rephrased</p>
+        <p class="caption">
+          Try to rephrased your original thought to get rid of those cognitive
+          distortions!
+        </p>
         <textarea
           name="rephrased"
           id="rephrased"
           rows="10"
-          @input="onInputChange"
+          @input="onRephrasedInputChange"
         ></textarea>
       </div>
     </div>
-    <div class="bottom">
+    <div class="distortions-tags-container">
       <div class="left-side">
         <TransitionGroup name="list">
           <TrPill
-            v-for="word in distortions"
+            v-for="word in originalDistortions"
             :key="word"
             :label="DISTORTIONS_NAMES[word]"
             state="regular"
@@ -32,7 +39,19 @@
         </TransitionGroup>
       </div>
       <div class="right-side">
-        <tr-button label="Submit">Submit</tr-button>
+        <TransitionGroup name="list">
+          <TrPill
+            v-for="word in rephrasedDistortions"
+            :key="word"
+            :label="DISTORTIONS_NAMES[word]"
+            state="regular"
+          ></TrPill>
+        </TransitionGroup>
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="right-side">
+        <tr-button label="Submit" @click="handleSumbit">Submit</tr-button>
       </div>
     </div>
   </form>
@@ -43,6 +62,8 @@ import TrPill from "./TrPill.vue";
 import TrButton from "./TrButton.vue";
 import { DISTORTIONS_DICTIONARY, DISTORTIONS_NAMES } from "../const";
 import { ref } from "vue";
+import { useStore } from "vuex";
+
 export default {
   name: "NewThoughtForm",
   components: {
@@ -53,35 +74,63 @@ export default {
   setup() {
     const original = ref("original");
     const rephrased = ref("rephrased");
-    const distortions = ref(new Set());
-    function onInputChange(event) {
-      console.log("check the words", event.target.value);
-      const stringToCheck = event.target.value;
-      const keyWords = Object.keys(DISTORTIONS_DICTIONARY);
-      console.log("stringToCheck", stringToCheck);
-      console.log(
-        "Object.keys(DISTORTIONS_DICTIONARY)",
-        Object.keys(DISTORTIONS_DICTIONARY)
-      );
-      if (stringToCheck.split(" ").some((word) => keyWords.includes(word))) {
-        console.log("DISTORTION!!!");
-      }
-      stringToCheck.split(" ").forEach((word) => {
+    const originalDistortions = ref(new Set());
+    const rephrasedDistortions = ref(new Set());
+    const keyWords = Object.keys(DISTORTIONS_DICTIONARY);
+    const store = useStore();
+    store.dispatch("ddd", null);
+    function checkDistortionsInText(source, text) {
+      if (source === "original") originalDistortions.value.clear();
+      if (source === "rephrased") rephrasedDistortions.value.clear();
+      text.split(" ").forEach((word) => {
         keyWords.forEach((keyWord) => {
           if (keyWord === word) {
-            distortions.value.add(...DISTORTIONS_DICTIONARY[word]);
+            if (source === "original") {
+              originalDistortions.value.add(...DISTORTIONS_DICTIONARY[word]);
+            } else if (source === "rephrased") {
+              rephrasedDistortions.value.add(...DISTORTIONS_DICTIONARY[word]);
+            }
           }
         });
       });
-      console.log(distortions.value);
+    }
+    function onOriginalInputChange(event) {
+      const stringToCheck = event.target.value;
+      checkDistortionsInText("original", stringToCheck);
+      original.value = stringToCheck;
+    }
+    function onRephrasedInputChange(event) {
+      const stringToCheck = event.target.value;
+      checkDistortionsInText("rephrased", stringToCheck);
+      rephrased.value = stringToCheck;
+    }
+    function handleSumbit() {
+      console.log("submitting form with");
+      console.log("original", original.value);
+      console.log("rephrased", rephrased.value);
+      console.log("distortions", originalDistortions.value);
+      const distObj = {};
+      originalDistortions.value.forEach((distortion) => {
+        distObj[distortion] = "";
+      });
+      const payload = {
+        original: original.value,
+        rephrased: rephrased.value,
+        distortions: distObj,
+      };
+      // debugger;
+      store.dispatch("addThought", payload);
     }
     return {
       original,
       rephrased,
-      distortions,
+      originalDistortions,
+      rephrasedDistortions,
       DISTORTIONS_NAMES,
       DISTORTIONS_DICTIONARY,
-      onInputChange,
+      onOriginalInputChange,
+      onRephrasedInputChange,
+      handleSumbit,
     };
   },
 };
@@ -113,10 +162,22 @@ export default {
       margin-bottom: 0.66rem;
     }
   }
-
+  .distortions-tags-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    .left-side,
+    .right-side {
+      display: flex;
+      gap: 0.66rem;
+      flex-wrap: wrap;
+      padding: 0.66rem 0;
+    }
+  }
   .bottom {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     width: 100%;
     .left-side {
       display: flex;
@@ -150,7 +211,7 @@ textarea {
 
 .list-enter-active,
 .list-leave-active {
-  transition: all 0.5s ease;
+  transition: all 0.5s ease 0.3s;
 }
 .list-enter-from,
 .list-leave-to {

@@ -19,6 +19,7 @@ export const DISTORTIONS_NAMES = {
 
 export const DISTORTIONS_DICTIONARY = {
   doom: ["catastrophizing", "overgeneralizing"],
+  doomed: ["catastrophizing", "overgeneralizing"],
   all: ["blackAndWhiteThinking"],
   always: ["blackAndWhiteThinking"],
   never: ["catastrophizing", "overgeneralizing"],
