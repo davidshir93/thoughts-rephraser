@@ -1,16 +1,11 @@
 <template>
   <form class="auth-form">
-    <h3>Sign up</h3>
-    <p>Already have an account? <router-link to="login">login</router-link></p>
+    <h3>Forgot Password</h3>
 
     <label for="email">Email:</label>
     <input type="email" name="email" v-model="email" required />
 
-    <label for="email">Password:</label>
-    <input type="password" name="password" v-model="password" required />
-
-    <TrButton @click="handleSubmit" label="Sign up" />
-
+    <TrButton @click="handleSubmit" label="Reset Password" />
     <div v-if="error" class="error">{{ error }}}</div>
   </form>
 </template>
@@ -24,18 +19,15 @@ import TrButton from "@/components/TrButton.vue";
 export default {
   setup() {
     const email = ref("");
-    const password = ref("");
     const error = ref("");
 
     const store = useStore();
     const router = useRouter();
 
     const handleSubmit = async () => {
-      // console.log(email.value, password.value);
       try {
-        await store.dispatch("signup", {
+        await store.dispatch("resetPassword", {
           email: email.value,
-          password: password.value,
         });
         // redirect the logged in user back to home page
         router.push("/");
@@ -45,7 +37,7 @@ export default {
       }
     };
 
-    return { handleSubmit, email, password, error };
+    return { handleSubmit, email, error };
   },
   components: {
     TrButton,

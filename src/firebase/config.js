@@ -1,5 +1,11 @@
-import { initializeApp } from "firebase/app";
+// import firebase from "firebase/app";
 import { getAuth } from "firebase/auth";
+// import "firebase/firestore";
+
+// v9 compat packages are API compatible with v8 code
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCAqpGeNtZ3nLtfHwWkNpO4ijWe6mtep14",
@@ -12,9 +18,11 @@ const firebaseConfig = {
 };
 
 // init firebase
-initializeApp(firebaseConfig);
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+const timestamp = firebase.firestore.FieldValue.serverTimestamp;
 
 // init firebase auth
 const auth = getAuth();
 
-export { auth };
+export { auth, timestamp };
+export default firebaseApp.firestore();

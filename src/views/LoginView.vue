@@ -1,14 +1,19 @@
 <template>
-  <form @submit.prevent="handleSubmit">
+  <form class="auth-form">
     <h3>Login</h3>
-
+    <p>Don't have an account? <router-link to="signup">signup</router-link></p>
     <label for="email">Email:</label>
     <input type="email" name="email" v-model="email" required />
 
     <label for="email">Password:</label>
     <input type="password" name="password" v-model="password" required />
 
-    <button>Login</button>
+    <TrButton @click="handleSubmit" label="Login" />
+    <p>
+      Forgot Password?
+      <router-link to="forgot-password">click here</router-link>
+    </p>
+
     <div v-if="error" class="error">{{ error }}}</div>
   </form>
 </template>
@@ -17,6 +22,7 @@
 import { ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import TrButton from "@/components/TrButton.vue";
 
 export default {
   setup() {
@@ -43,6 +49,9 @@ export default {
     };
 
     return { handleSubmit, email, password, error };
+  },
+  components: {
+    TrButton,
   },
 };
 </script>

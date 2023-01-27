@@ -13,6 +13,7 @@
   --text-color: #141414;
   --secondary-color: #c5c5c5;
   --bg-color: #f6f6f6;
+  --overlay-darkness: #222222de;
 }
 
 #app {
@@ -25,11 +26,11 @@
   margin: 0.66rem auto;
   overflow-x: hidden !important;
   padding: 1.33rem;
-  background-color: rgb(225, 245, 255);
   border-radius: 1.33rem;
   width: 100%;
   height: calc(100vh - 2.33rem);
-  position: relative;
+  /*    position: relative;
+ */
 }
 
 /* navbar TODO: STYLE THIS */
@@ -37,22 +38,27 @@ nav {
   display: flex;
   align-items: center;
 }
+
 nav h1 {
   margin-right: auto;
 }
+
 nav a,
 nav button,
 nav span {
   margin-left: 20px;
 }
+
 nav a {
   color: #444;
   text-decoration: none;
   font-weight: bold;
 }
+
 nav span {
   color: #777;
 }
+
 button {
   background: #00dba4;
   border: 0;
@@ -60,6 +66,18 @@ button {
   border-radius: 20px;
   color: #fff;
   cursor: pointer;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  & input {
+    padding: 0.66rem;
+    border-radius: 1rem;
+    width: 15rem;
+  }
 }
 
 /* TODO: Style this */
@@ -70,6 +88,7 @@ label {
   margin-bottom: 10px;
   margin-top: 20px;
 }
+
 form button {
   display: block;
   margin-top: 20px;
@@ -110,6 +129,7 @@ p,
 .caption {
   font-size: 0.66rem;
   line-height: 1rem;
+
   &.bold {
     font-weight: 600;
   }
@@ -120,6 +140,7 @@ p,
   * {
     font-size: 16px;
   }
+
   #app {
     max-width: 640px !important;
   }
@@ -129,6 +150,7 @@ p,
   * {
     font-size: 14px;
   }
+
   #app {
     max-width: 100%;
   }
@@ -138,10 +160,12 @@ p,
   * {
     font-size: 14px;
   }
+
   #app {
     /* display: none; */
     padding: 0;
   }
+
   #app::before {
     content: "Please give me more space...";
     height: 100vh;
