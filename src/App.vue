@@ -1,8 +1,12 @@
 <template>
   <div class="app-content-wrapper">
-    <Navbar />
-    <router-view v-if="authIsReady" />
-    <LoadingSpinner v-else />
+    <Transition name="fade">
+      <div v-if="authIsReady && !isLoading">
+        <Navbar />
+        <router-view />
+      </div>
+      <LoadingSpinner v-else />
+    </Transition>
   </div>
 </template>
 
@@ -17,7 +21,8 @@ export default {
   setup() {
     const store = useStore();
     const authIsReady = computed(() => store.state.authIsReady);
-    return { authIsReady };
+    const isLoading = computed(() => store.state.isLoading);
+    return { authIsReady, isLoading };
   },
   components: { Navbar, LoadingSpinner },
 };

@@ -16,6 +16,7 @@ const store = createStore({
   state: {
     user: null,
     authIsReady: false,
+    isLoading: false,
     thoughts: [
       {
         id: 1,
@@ -44,6 +45,12 @@ const store = createStore({
   },
   getters: {},
   mutations: {
+    setIsLoading(state, payload) {
+      state.isLoading = payload;
+    },
+    setAuthIsReady(state, payload) {
+      state.authIsReady = payload;
+    },
     setUser(state, payload) {
       state.user = payload;
       console.log("user state changed:", state.user);
@@ -54,9 +61,6 @@ const store = createStore({
         ...payload,
       };
       console.log("user enriched and now looks like this:", state.user);
-    },
-    setAuthIsReady(state, payload) {
-      state.authIsReady = payload;
     },
     addThought(state, payload) {
       state.thoughts.unshift(payload);
@@ -80,13 +84,15 @@ const store = createStore({
     },
     async login(context, { email, password }) {
       console.log("login action called");
+      context.commit("setIsLoading", true);
       const res = await signInWithEmailAndPassword(auth, email, password);
       if (res) {
         context.commit("setUser", res.user);
-        context.dispatch("getUserData");
+        await context.dispatch("getUserData");
       } else {
         throw new Error("Could not complete login");
       }
+      context.commit("setIsLoading", false);
     },
     async logout(context) {
       await signOut(auth);
@@ -96,12 +102,14 @@ const store = createStore({
       await sendPasswordResetEmail(auth, email);
     },
     async getUserData(context) {
+      context.commit("setIsLoading", true);
       const currentUser = context.state.user
         ? context.state.user.uid
         : auth.currentUser.uid;
       const dataBase = await db.collection("users").doc(currentUser);
       const dbResults = await dataBase.get();
       context.commit("enrichUserData", dbResults.data());
+      context.commit("setIsLoading", false);
     },
     async addThought(context, { original, rephrased, distortions }) {
       const newThoguht = {
@@ -110,7 +118,7 @@ const store = createStore({
         rephrased: rephrased,
         distortions: distortions,
       };
-      debugger;
+      // debugger;
       try {
         const dataBase = db.collection("thoughts").doc(newThoguht.id);
         await dataBase.set({
@@ -128,6 +136,7 @@ const store = createStore({
 });
 
 const unsub = onAuthStateChanged(auth, (user) => {
+  store.commit("setIsLoading", true);
   store.commit("setUser", user);
   if (user) {
     store.dispatch("getUserData").then(() => {
@@ -135,7 +144,7 @@ const unsub = onAuthStateChanged(auth, (user) => {
     });
   }
   store.commit("setAuthIsReady", true);
-
+  store.commit("setIsLoading", false);
   unsub();
 });
 
