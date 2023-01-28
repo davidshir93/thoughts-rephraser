@@ -2,7 +2,7 @@
   <div class="home">
     <TrButton :disabled="!user" label="Add A Thought" />
     <new-thought-form></new-thought-form>
-    <div class="thoguhts-grid-container">
+    <div v-show="thoughtsLoaded" class="thoguhts-grid-container">
       <ThoughtCard
         v-for="thought in thoughts"
         :key="thought.id"
@@ -30,9 +30,12 @@ export default {
     const thoughts = computed(() => store.state.thoughts);
     const user = computed(() => store.state.user);
 
+    const thoughtsLoaded = computed(() => store.state.thoughtsLoaded);
+
     return {
       thoughts,
       user,
+      thoughtsLoaded,
     };
   },
   name: "HomeView",
@@ -49,6 +52,7 @@ export default {
   display: flex;
   gap: 1rem;
   margin: 1.33rem 0;
+  flex-wrap: wrap;
 }
 
 .fade-enter-active,

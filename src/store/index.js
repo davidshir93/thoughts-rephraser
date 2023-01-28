@@ -11,37 +11,40 @@ import {
 } from "firebase/auth";
 // import firebase from "firebase/compat/app";
 import db from "../firebase/config";
+import { collection, getDocs } from "firebase/firestore";
 
 const store = createStore({
   state: {
     user: null,
     authIsReady: false,
     isLoading: false,
-    thoughts: [
-      {
-        id: 1,
-        original:
-          "I’m a total mess and I can’t focus at all, I’ll never succeed",
-        rephrased:
-          "I’m having a hard time focusing right now, but I’ve had and will have different experiences",
-        distortions: {
-          blackAndWhiteThinking: ["total", "at all", "never"],
-          catastrophizing: ["mess", "I'll never"],
-          overgeneralizing: ["at all", "never"],
-        },
-      },
-      {
-        id: 2,
-        original:
-          "I don’t know how to handle social situations and I doomed to be alone",
-        rephrased:
-          "I’m having a difficult time with some of my social interactions, but not all of them are bad",
-        distortions: {
-          blackAndWhiteThinking: ["I don’t know"],
-          catastrophizing: ["doomed"],
-        },
-      },
-    ],
+    // thoughts: [
+    //   {
+    //     id: 1,
+    //     original:
+    //       "I’m a total mess and I can’t focus at all, I’ll never succeed",
+    //     rephrased:
+    //       "I’m having a hard time focusing right now, but I’ve had and will have different experiences",
+    //     distortions: {
+    //       blackAndWhiteThinking: ["total", "at all", "never"],
+    //       catastrophizing: ["mess", "I'll never"],
+    //       overgeneralizing: ["at all", "never"],
+    //     },
+    //   },
+    //   {
+    //     id: 2,
+    //     original:
+    //       "I don’t know how to handle social situations and I doomed to be alone",
+    //     rephrased:
+    //       "I’m having a difficult time with some of my social interactions, but not all of them are bad",
+    //     distortions: {
+    //       blackAndWhiteThinking: ["I don’t know"],
+    //       catastrophizing: ["doomed"],
+    //     },
+    //   },
+    // ],
+    thoughts: [],
+    thoughtsLoaded: false,
   },
   getters: {},
   mutations: {
@@ -64,6 +67,12 @@ const store = createStore({
     },
     addThought(state, payload) {
       state.thoughts.unshift(payload);
+    },
+    setThoughts(state, payload) {
+      state.thoughts = payload;
+    },
+    setThoughtsLoaded(state, payload) {
+      state.thoughtsLoaded = payload;
     },
   },
   actions: {
@@ -135,6 +144,24 @@ const store = createStore({
         throw new Error("Could not add thought");
       }
     },
+    async getThoughts(context) {
+      context.commit("setThoughtsLoaded", false);
+
+      const querySnapshot = await getDocs(collection(db, "thoughts"));
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        context.state.thoughts.push({
+          id: doc.data().thoughtId,
+          createdBy: doc.data().createdBy,
+          timestamp: doc.data().timestamp,
+          original: doc.data().original,
+          rephrased: doc.data().rephrased,
+          distortions: doc.data().distortions,
+        });
+        // console.log(doc.id, " => ", doc.data());
+      });
+      context.commit("setThoughtsLoaded", true);
+    },
   },
   modules: {},
 });
@@ -147,6 +174,7 @@ const unsub = onAuthStateChanged(auth, (user) => {
       store.commit("setAuthIsReady", true);
     });
   }
+  store.dispatch("getThoughts");
   store.commit("setAuthIsReady", true);
   store.commit("setIsLoading", false);
   unsub();

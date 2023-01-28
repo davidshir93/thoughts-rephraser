@@ -1,18 +1,16 @@
 <template>
-  <div class="thoguhts-grid-container">
-    <div class="thought-card">
-      <TrTabs :tabs="tabs" @click="changeTab"></TrTabs>
-      <Transition name="fade" mode="out-in">
-        <p v-if="selectedTab === 'original'">{{ original }}</p>
-        <p v-else-if="selectedTab === 'rephrased'">{{ rephrased }}</p>
-      </Transition>
-      <TrPill
-        v-for="word in Object.keys(distortions)"
-        :key="word.id"
-        :label="DISTORTIONS_NAMES[word]"
-        state="regular"
-      ></TrPill>
-    </div>
+  <div class="thought-card">
+    <TrTabs :tabs="tabs" @click="changeTab"></TrTabs>
+    <Transition name="fade" mode="out-in">
+      <p v-if="selectedTab === 'original'">{{ original }}</p>
+      <p v-else-if="selectedTab === 'rephrased'">{{ rephrased }}</p>
+    </Transition>
+    <TrPill
+      v-for="word in Object.keys(distortions)"
+      :key="word.id"
+      :label="DISTORTIONS_NAMES[word]"
+      state="regular"
+    ></TrPill>
   </div>
 </template>
 
