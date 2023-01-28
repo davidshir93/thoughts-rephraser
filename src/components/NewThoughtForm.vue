@@ -51,7 +51,10 @@
     </div>
     <div class="bottom">
       <div class="right-side">
-        <tr-button label="Submit" @click="handleSumbit">Submit</tr-button>
+        <Transition name="fade">
+          <div v-if="error" class="error caption">{{ error }}</div>
+        </Transition>
+        <tr-button label="Submit" @click="handleSumbit" />
       </div>
     </div>
   </form>
@@ -61,7 +64,7 @@
 import TrPill from "./TrPill.vue";
 import TrButton from "./TrButton.vue";
 import { DISTORTIONS_DICTIONARY, DISTORTIONS_NAMES } from "../const";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -72,10 +75,13 @@ export default {
   },
   emits: ["click"],
   setup() {
-    const original = ref("original");
-    const rephrased = ref("rephrased");
+    const original = ref("");
+    const rephrased = ref("");
     const originalDistortions = ref(new Set());
     const rephrasedDistortions = ref(new Set());
+
+    const error = ref("");
+
     const keyWords = Object.keys(DISTORTIONS_DICTIONARY);
     const store = useStore();
     function checkDistortionsInText(source, text) {
@@ -103,28 +109,47 @@ export default {
       checkDistortionsInText("rephrased", stringToCheck);
       rephrased.value = stringToCheck;
     }
+    const formIsValid = computed(() => {
+      if (
+        original.value &&
+        rephrased.value &&
+        rephrasedDistortions.value.size < 1
+      ) {
+        console.log("formIsValid True");
+        return true;
+      }
+      console.log("formIsValid False");
+      return false;
+    });
     function handleSumbit() {
       console.log("submitting form with");
       console.log("original", original.value);
       console.log("rephrased", rephrased.value);
       console.log("distortions", originalDistortions.value);
-      const distObj = {};
-      originalDistortions.value.forEach((distortion) => {
-        distObj[distortion] = "";
-      });
-      const payload = {
-        original: original.value,
-        rephrased: rephrased.value,
-        distortions: distObj,
-      };
-      // debugger;
-      store.dispatch("addThought", payload);
+      if (formIsValid.value) {
+        console.log("should reset error now");
+        error.value = "";
+        const distObj = {};
+        originalDistortions.value.forEach((distortion) => {
+          distObj[distortion] = "";
+        });
+        const payload = {
+          original: original.value,
+          rephrased: rephrased.value,
+          distortions: distObj,
+        };
+        // debugger;
+        store.dispatch("addThought", payload);
+      } else {
+        error.value = "Please check the form";
+      }
     }
     return {
       original,
       rephrased,
       originalDistortions,
       rephrasedDistortions,
+      error,
       DISTORTIONS_NAMES,
       DISTORTIONS_DICTIONARY,
       onOriginalInputChange,
@@ -187,6 +212,8 @@ export default {
     .right-side {
       display: flex;
       justify-content: flex-end;
+      align-items: center;
+      gap: 0.66rem;
     }
   }
 }
