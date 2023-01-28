@@ -78,7 +78,6 @@ export default {
     const rephrasedDistortions = ref(new Set());
     const keyWords = Object.keys(DISTORTIONS_DICTIONARY);
     const store = useStore();
-    store.dispatch("ddd", null);
     function checkDistortionsInText(source, text) {
       if (source === "original") originalDistortions.value.clear();
       if (source === "rephrased") rephrasedDistortions.value.clear();
