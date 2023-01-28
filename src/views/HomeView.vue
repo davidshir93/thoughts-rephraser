@@ -10,6 +10,8 @@
         :original="thought.original"
         :rephrased="thought.rephrased"
         :distortions="thought.distortions"
+        :firstName="thought.firstName"
+        :lastName="thought.lastName"
       />
     </div>
   </div>

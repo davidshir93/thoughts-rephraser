@@ -126,6 +126,9 @@ const store = createStore({
         original: original,
         rephrased: rephrased,
         distortions: distortions,
+        createdBy: context.state.user.uid,
+        firstName: context.state.user.firstName,
+        lastName: context.state.user.lastName,
       };
       // debugger;
       try {
@@ -148,11 +151,14 @@ const store = createStore({
       context.commit("setThoughtsLoaded", false);
 
       const querySnapshot = await getDocs(collection(db, "thoughts"));
-      querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
+      await querySnapshot.forEach(async (doc) => {
+        const userInfo = await getUserById(doc.data().createdBy);
+        console.log(userInfo);
         context.state.thoughts.push({
           id: doc.data().thoughtId,
           createdBy: doc.data().createdBy,
+          firstName: userInfo.firstName,
+          lastName: userInfo.lastName,
           timestamp: doc.data().timestamp,
           original: doc.data().original,
           rephrased: doc.data().rephrased,
@@ -165,7 +171,15 @@ const store = createStore({
   },
   modules: {},
 });
-
+const getUserById = async (id) => {
+  try {
+    const dataBase = db.collection("users").doc(id);
+    const dbResults = await dataBase.get();
+    return dbResults.data();
+  } catch (error) {
+    console.error(error);
+  }
+};
 const unsub = onAuthStateChanged(auth, (user) => {
   store.commit("setIsLoading", true);
   store.commit("setUser", user);

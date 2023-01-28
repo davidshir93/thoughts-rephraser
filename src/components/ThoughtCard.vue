@@ -11,6 +11,7 @@
       :label="DISTORTIONS_NAMES[word]"
       state="regular"
     ></TrPill>
+    <p class="caption">Created by {{ fullName }}</p>
   </div>
 </template>
 
@@ -18,7 +19,8 @@
 import TrPill from "./TrPill.vue";
 import TrTabs from "./TrTabs.vue";
 import { TABS_THOGUHT_STATES, DISTORTIONS_NAMES } from "../const";
-import { ref } from "vue";
+import { ref, computed } from "vue";
+
 export default {
   name: "ThoughtCard",
   components: {
@@ -30,18 +32,24 @@ export default {
     original: String,
     rephrased: String,
     distortions: Object,
+    firstName: String,
+    lastName: String,
   },
   emits: ["click"],
-  setup() {
+  setup(props) {
     const selectedTab = ref("original");
     function changeTab(newTab) {
       selectedTab.value = newTab;
     }
+
+    const fullName = computed(() => props.firstName + " " + props.lastName);
+
     return {
       selectedTab,
       changeTab,
       DISTORTIONS_NAMES,
       tabs: ref(JSON.parse(JSON.stringify(TABS_THOGUHT_STATES))),
+      fullName,
     };
   },
 };
@@ -54,7 +62,7 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  width: 416px;
+  width: 400px;
   padding: 1.33rem;
   background-color: var(--secondary-color);
   border-radius: 1rem;
