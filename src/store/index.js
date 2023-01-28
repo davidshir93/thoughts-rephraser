@@ -113,20 +113,24 @@ const store = createStore({
     },
     async addThought(context, { original, rephrased, distortions }) {
       const newThoguht = {
-        id: new Date().valueOf(),
+        timestamp: new Date(),
         original: original,
         rephrased: rephrased,
         distortions: distortions,
       };
       // debugger;
       try {
-        const dataBase = db.collection("thoughts").doc(newThoguht.id);
+        context.commit("setIsLoading", true);
+        const dataBase = db.collection("thoughts").doc();
         await dataBase.set({
+          thoughtId: dataBase.id,
           createdBy: context.state.user.uid,
           ...newThoguht,
         });
+        context.commit("setIsLoading", false);
         context.commit("addThought", newThoguht);
       } catch (err) {
+        context.commit("setIsLoading", false);
         console.log(err.message);
         throw new Error("Could not add thought");
       }
