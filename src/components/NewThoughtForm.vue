@@ -114,11 +114,8 @@ export default {
         original.value &&
         rephrased.value &&
         rephrasedDistortions.value.size < 1
-      ) {
-        console.log("formIsValid True");
+      )
         return true;
-      }
-      console.log("formIsValid False");
       return false;
     });
     function handleSumbit() {
@@ -127,7 +124,6 @@ export default {
       console.log("rephrased", rephrased.value);
       console.log("distortions", originalDistortions.value);
       if (formIsValid.value) {
-        console.log("should reset error now");
         error.value = "";
         const distObj = {};
         originalDistortions.value.forEach((distortion) => {
@@ -138,7 +134,6 @@ export default {
           rephrased: rephrased.value,
           distortions: distObj,
         };
-        // debugger;
         store.dispatch("addThought", payload);
       } else {
         error.value = "Please check the form";
