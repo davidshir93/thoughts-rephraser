@@ -6,8 +6,11 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  sendPasswordResetEmail,
   onAuthStateChanged,
 } from "firebase/auth";
+// import firebase from "firebase/compat/app";
+import db from "../firebase/config";
 
 const store = createStore({
   state: {
@@ -45,6 +48,13 @@ const store = createStore({
       state.user = payload;
       console.log("user state changed:", state.user);
     },
+    enrichUserData(state, payload) {
+      state.user = {
+        ...state.user,
+        ...payload,
+      };
+      console.log("user enriched and now looks like this:", state.user);
+    },
     setAuthIsReady(state, payload) {
       state.authIsReady = payload;
     },
@@ -53,9 +63,15 @@ const store = createStore({
     },
   },
   actions: {
-    async signup(context, { email, password }) {
-      console.log("signup action called");
+    async signup(context, { firstName, lastName, email, password }) {
+      console.log("signup action called", firstName, lastName, email, password);
       const res = await createUserWithEmailAndPassword(auth, email, password);
+      const dataBase = db.collection("users").doc(res.user.uid);
+      await dataBase.set({
+        firstName,
+        lastName,
+        email,
+      });
       if (res) {
         context.commit("setUser", res.user);
       } else {
@@ -67,33 +83,59 @@ const store = createStore({
       const res = await signInWithEmailAndPassword(auth, email, password);
       if (res) {
         context.commit("setUser", res.user);
+        context.dispatch("getUserData");
       } else {
         throw new Error("Could not complete login");
       }
     },
     async logout(context) {
-      // console.log("logout user", state.user);
-      console.log("logout user", context.state.user);
       await signOut(auth);
       context.commit("setUser", null);
     },
-    addThought(context, { original, rephrased, distortions }) {
-      // debugger;
+    async resetPassword(context, { email }) {
+      await sendPasswordResetEmail(auth, email);
+    },
+    async getUserData(context) {
+      const currentUser = context.state.user
+        ? context.state.user.uid
+        : auth.currentUser.uid;
+      const dataBase = await db.collection("users").doc(currentUser);
+      const dbResults = await dataBase.get();
+      context.commit("enrichUserData", dbResults.data());
+    },
+    async addThought(context, { original, rephrased, distortions }) {
       const newThoguht = {
         id: new Date().valueOf(),
         original: original,
         rephrased: rephrased,
         distortions: distortions,
       };
-      context.commit("addThought", newThoguht);
+      debugger;
+      try {
+        const dataBase = db.collection("thoughts").doc(newThoguht.id);
+        await dataBase.set({
+          createdBy: context.state.user.uid,
+          ...newThoguht,
+        });
+        context.commit("addThought", newThoguht);
+      } catch (err) {
+        console.log(err.message);
+        throw new Error("Could not add thought");
+      }
     },
   },
   modules: {},
 });
 
 const unsub = onAuthStateChanged(auth, (user) => {
-  store.commit("setAuthIsReady", true);
   store.commit("setUser", user);
+  if (user) {
+    store.dispatch("getUserData").then(() => {
+      store.commit("setAuthIsReady", true);
+    });
+  }
+  store.commit("setAuthIsReady", true);
+
   unsub();
 });
 

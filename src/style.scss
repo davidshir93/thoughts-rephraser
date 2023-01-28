@@ -14,6 +14,7 @@
   --secondary-color: #c5c5c5;
   --bg-color: #f6f6f6;
   --overlay-darkness: #222222de;
+  --error-color: #E80000;
 }
 
 #app {
@@ -22,15 +23,13 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: var(--text-color);
-  max-width: 1312px;
-  margin: 0.66rem auto;
   overflow-x: hidden !important;
-  padding: 1.33rem;
+  /* margin: 0.66rem auto;
+  max-width: 1312px;
+  padding: 1.33rem; */
   border-radius: 1.33rem;
   width: 100%;
-  height: calc(100vh - 2.33rem);
-  /*    position: relative;
- */
+  /* height: calc(100vh - 2.33rem); */
 }
 
 /* navbar TODO: STYLE THIS */
@@ -132,6 +131,57 @@ p,
 
   &.bold {
     font-weight: 600;
+  }
+}
+
+.error {
+  margin-top: 0.66rem;
+  color: var(--error-color);
+  animation: nudge 500ms ease-in-out forwards;
+}
+
+// Transitions using Vue transitions
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+@keyframes nudge {
+  0% {
+    transform: translateX(0px);
+  }
+
+  30% {
+    transform: translateX(20px);
+  }
+
+  45% {
+    transform: translateX(-16px);
+  }
+
+  52% {
+    transform: translateX(10px);
+  }
+
+  55% {
+    transform: translateX(-4px);
+  }
+
+  60% {
+    transform: translateX(2px);
+  }
+
+  61% {
+    transform: translateX(0px);
+  }
+
+  100% {
+    transform: translateX(0px);
   }
 }
 

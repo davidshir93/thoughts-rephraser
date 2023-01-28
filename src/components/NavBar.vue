@@ -7,8 +7,8 @@
         <router-link to="/">Home</router-link>
       </div>
       <!-- for logged in users -->
-      <div v-if="user">
-        <span v-text="user"></span>
+      <div v-if="userFullName">
+        <span v-text="userFullName"></span>
         <button @click="handleLogout">Logout</button>
       </div>
       <!-- for logged out users -->
@@ -38,7 +38,11 @@ export default {
     return {
       handleLogout,
       authIsReady,
-      user: computed(() => store.state.user?.email),
+      userFullName: computed(() =>
+        store.state.user?.firstName
+          ? store.state.user?.firstName + " " + store.state.user?.lastName
+          : ""
+      ),
     };
   },
 };

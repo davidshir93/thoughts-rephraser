@@ -14,7 +14,9 @@
       <router-link to="forgot-password">click here</router-link>
     </p>
 
-    <div v-if="error" class="error">{{ error }}}</div>
+    <Transition name="fade">
+      <div v-if="error" class="error caption">{{ error }}</div>
+    </Transition>
   </form>
 </template>
 
@@ -34,7 +36,6 @@ export default {
     const router = useRouter();
 
     const handleSubmit = async () => {
-      // console.log(email.value, password.value);
       try {
         await store.dispatch("login", {
           email: email.value,

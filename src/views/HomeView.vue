@@ -1,12 +1,5 @@
 <template>
   <div class="home">
-    <TrModal
-      v-if="showModal"
-      title="Test Modal"
-      content="I hate you so much right now"
-      btnText="Got it"
-      @closeModal="closeModal"
-    ></TrModal>
     <TrButton :disabled="!user" label="Add A Thought" />
     <new-thought-form></new-thought-form>
     <div class="thoguhts-grid-container">
@@ -27,9 +20,8 @@
 import ThoughtCard from "@/components/ThoughtCard.vue";
 import TrButton from "@/components/TrButton.vue";
 import NewThoughtForm from "@/components/NewThoughtForm.vue";
-import TrModal from "@/components/TrModal.vue";
 import { useStore } from "vuex";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 
 export default {
   setup() {
@@ -38,17 +30,9 @@ export default {
     const thoughts = computed(() => store.state.thoughts);
     const user = computed(() => store.state.user);
 
-    const showModal = ref(true);
-
-    const closeModal = () => {
-      console.log("close modal from home view");
-      showModal.value = false;
-    };
     return {
       thoughts,
       user,
-      showModal,
-      closeModal,
     };
   },
   name: "HomeView",
@@ -56,7 +40,6 @@ export default {
     ThoughtCard,
     TrButton,
     NewThoughtForm,
-    TrModal,
   },
 };
 </script>
@@ -66,5 +49,15 @@ export default {
   display: flex;
   gap: 1rem;
   margin: 1.33rem 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

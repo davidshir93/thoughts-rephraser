@@ -33,7 +33,6 @@ export default {
   setup(props, { emit }) {
     return {
       closeModal() {
-        console.log("clicked from modal");
         emit("closeModal");
       },
     };
