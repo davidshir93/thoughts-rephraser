@@ -140,7 +140,7 @@ p,
   animation: nudge 500ms ease-in-out forwards;
 }
 
-// Transitions using Vue transitions
+/* Transitions using Vue transitions */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease;
