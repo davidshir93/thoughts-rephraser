@@ -51,10 +51,21 @@ export default {
 
 <style lang="scss">
 .thoguhts-grid-container {
-  display: flex;
-  gap: 1rem;
+  display: grid;
   margin: 1.33rem 0;
-  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+@media (min-width: 600px) {
+  .thoguhts-grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .thoguhts-grid-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .fade-enter-active,

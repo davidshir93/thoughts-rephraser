@@ -2,51 +2,48 @@
   <form action="handleSumbit" class="new-thoguht-form">
     <div class="inputs-container">
       <div class="right-side original">
-        <p>Original</p>
+        <p class="bold">Original</p>
         <p class="caption">
           Write down what you are thinking now, no filters please :)
         </p>
         <textarea
           name="original"
           id="original"
-          rows="10"
+          rows="5"
           @input="onOriginalInputChange"
         ></textarea>
+        <div class="distortions-tags-container">
+          <TransitionGroup name="list">
+            <TrPill
+              v-for="word in originalDistortions"
+              :key="word"
+              :label="DISTORTIONS_NAMES[word]"
+              state="regular"
+            ></TrPill>
+          </TransitionGroup>
+        </div>
       </div>
       <div class="left-side rephrased">
-        <p>Rephrased</p>
+        <p class="bold">Rephrased</p>
         <p class="caption">
-          Try to rephrased your original thought to get rid of those cognitive
-          distortions!
+          Try to rephrased to get rid of those cognitive distortions!
         </p>
         <textarea
           name="rephrased"
           id="rephrased"
-          rows="10"
+          rows="5"
           @input="onRephrasedInputChange"
         ></textarea>
-      </div>
-    </div>
-    <div class="distortions-tags-container">
-      <div class="left-side">
-        <TransitionGroup name="list">
-          <TrPill
-            v-for="word in originalDistortions"
-            :key="word"
-            :label="DISTORTIONS_NAMES[word]"
-            state="regular"
-          ></TrPill>
-        </TransitionGroup>
-      </div>
-      <div class="right-side">
-        <TransitionGroup name="list">
-          <TrPill
-            v-for="word in rephrasedDistortions"
-            :key="word"
-            :label="DISTORTIONS_NAMES[word]"
-            state="regular"
-          ></TrPill>
-        </TransitionGroup>
+        <div class="distortions-tags-container">
+          <TransitionGroup name="list">
+            <TrPill
+              v-for="word in rephrasedDistortions"
+              :key="word"
+              :label="DISTORTIONS_NAMES[word]"
+              state="regular"
+            ></TrPill>
+          </TransitionGroup>
+        </div>
       </div>
     </div>
     <div class="bottom">
@@ -54,7 +51,11 @@
         <Transition name="fade">
           <div v-if="error" class="error caption">{{ error }}</div>
         </Transition>
-        <tr-button label="Submit" @click="handleSumbit" />
+        <tr-button
+          label="Share with the community"
+          :disabled="!userLogged"
+          @click="handleSumbit"
+        />
       </div>
     </div>
   </form>
@@ -84,6 +85,9 @@ export default {
 
     const keyWords = Object.keys(DISTORTIONS_DICTIONARY);
     const store = useStore();
+
+    const userLogged = computed(() => store.state.user?.firstName);
+
     function checkDistortionsInText(source, text) {
       if (source === "original") originalDistortions.value.clear();
       if (source === "rephrased") rephrasedDistortions.value.clear();
@@ -123,7 +127,7 @@ export default {
       console.log("original", original.value);
       console.log("rephrased", rephrased.value);
       console.log("distortions", originalDistortions.value);
-      if (formIsValid.value) {
+      if (userLogged.value && formIsValid.value) {
         error.value = "";
         const distObj = {};
         originalDistortions.value.forEach((distortion) => {
@@ -150,6 +154,7 @@ export default {
       onOriginalInputChange,
       onRephrasedInputChange,
       handleSumbit,
+      userLogged,
     };
   },
 };
@@ -164,19 +169,24 @@ export default {
   border-radius: 1rem;
 
   .inputs-container {
-    display: flex;
+    display: grid;
     align-items: center;
     gap: 1rem;
     width: 100%;
     transition: all 300ms ease;
     height: 100%;
+    align-items: start;
+
+    @media (min-width: 900px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
   & > * {
     width: 50%;
   }
   .left-side,
   .right-side {
-    width: 50%;
+    // width: 50%;
     p {
       margin-bottom: 0.66rem;
     }
@@ -185,31 +195,23 @@ export default {
     display: flex;
     align-items: center;
     width: 100%;
-    .left-side,
-    .right-side {
-      display: flex;
-      gap: 0.66rem;
-      flex-wrap: wrap;
-      padding: 0.66rem 0;
-    }
+    display: flex;
+    gap: 0.66rem;
+    flex-wrap: wrap;
+    padding: 0.66rem 0;
   }
   .bottom {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     width: 100%;
-    .left-side {
-      display: flex;
-      gap: 0.66rem;
-      flex-wrap: wrap;
-      padding: 0.66rem 0;
-    }
-    .right-side {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 0.66rem;
-    }
+
+    // .right-side {
+    //   display: flex;
+    //   justify-content: flex-end;
+    //   align-items: center;
+    //   gap: 0.66rem;
+    // }
   }
 }
 

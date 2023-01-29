@@ -29,6 +29,7 @@
   padding: 1.33rem; */
   border-radius: 1.33rem;
   width: 100%;
+  margin: 0 auto;
   /* height: calc(100vh - 2.33rem); */
 }
 
@@ -88,10 +89,6 @@ label {
   margin-top: 20px;
 }
 
-form button {
-  display: block;
-  margin-top: 20px;
-}
 
 nav {
   padding: 30px;
@@ -128,10 +125,10 @@ p,
 .caption {
   font-size: 0.66rem;
   line-height: 1rem;
+}
 
-  &.bold {
-    font-weight: 600;
-  }
+.bold {
+  font-weight: 600;
 }
 
 .error {
@@ -188,17 +185,18 @@ p,
 /* On screens that are 870px or less */
 @media screen and (max-width: 870px) {
   * {
-    font-size: 16px;
+    font-size: 20px;
   }
 
   #app {
-    max-width: 640px !important;
+    /* max-width: 640px !important; */
+
   }
 }
 
 @media screen and (max-width: 500px) {
   * {
-    font-size: 14px;
+    font-size: 18px;
   }
 
   #app {
@@ -208,7 +206,7 @@ p,
 
 @media screen and (max-width: 330px) {
   * {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   #app {

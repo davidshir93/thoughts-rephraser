@@ -1,11 +1,5 @@
 <template>
-  <button
-    type="button"
-    :disabled="disabled"
-    :class="classes"
-    @click="onClick"
-    :style="style"
-  >
+  <button type="button" :disabled="disabled" :class="classes" @click="onClick">
     {{ label }}
   </button>
 </template>
@@ -47,13 +41,11 @@ export default {
     return {
       classes: computed(() => ({
         "tr-button": true,
-        text: true,
+        caption: true,
+        disabled: props.disabled,
         "tr-button--primary": props.primary,
         "tr-button--secondary": !props.primary,
         [`tr-button--${props.size || "medium"}`]: true,
-      })),
-      style: computed(() => ({
-        backgroundColor: props.backgroundColor,
       })),
       onClick() {
         emit("click");
@@ -65,17 +57,20 @@ export default {
 
 <style scoped lang="scss">
 .tr-button {
-  padding: 12px 24px;
+  padding: 0.33rem 0.66rem;
   border-radius: 3rem;
   border: 1px solid var(--text-color);
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  &:not(.disabled):hover {
+    background-color: var(--text-color);
+    color: var(--bg-color);
+  }
 }
 
-.tr-button:hover {
-  background-color: var(--text-color);
-  color: var(--bg-color);
-}
-
-.tr-button--primary {
+.tr-button .tr-button--primary {
   background-color: var(--bg-color);
   color: var(--text-color);
 }

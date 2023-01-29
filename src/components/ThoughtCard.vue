@@ -62,7 +62,7 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  width: 400px;
+  // width: 400px;
   padding: 1.33rem;
   background-color: var(--secondary-color);
   border-radius: 1rem;
