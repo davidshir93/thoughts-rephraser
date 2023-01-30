@@ -2,7 +2,7 @@
   <div class="home">
     <new-thought-form></new-thought-form>
     <div v-show="thoughtsLoaded" class="thoguhts-grid-container">
-      <TransitionGroup name="list" class="thought-card">
+      <TransitionGroup name="list">
         <ThoughtCard
           v-for="thought in thoughts"
           :key="thought.id"

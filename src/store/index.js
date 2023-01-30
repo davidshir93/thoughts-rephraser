@@ -11,7 +11,13 @@ import {
 } from "firebase/auth";
 // import firebase from "firebase/compat/app";
 import db from "../firebase/config";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 
 const store = createStore({
   state: {
@@ -25,11 +31,7 @@ const store = createStore({
     //       "I’m a total mess and I can’t focus at all, I’ll never succeed",
     //     rephrased:
     //       "I’m having a hard time focusing right now, but I’ve had and will have different experiences",
-    //     distortions: {
-    //       blackAndWhiteThinking: ["total", "at all", "never"],
-    //       catastrophizing: ["mess", "I'll never"],
-    //       overgeneralizing: ["at all", "never"],
-    //     },
+    //     distortions: ['blackAndWhiteThinking', 'catastrophizing', 'overgeneralizing'],
     //   },
     //   {
     //     id: 2,
@@ -37,10 +39,7 @@ const store = createStore({
     //       "I don’t know how to handle social situations and I doomed to be alone",
     //     rephrased:
     //       "I’m having a difficult time with some of my social interactions, but not all of them are bad",
-    //     distortions: {
-    //       blackAndWhiteThinking: ["I don’t know"],
-    //       catastrophizing: ["doomed"],
-    //     },
+    //     distortions: ['blackAndWhiteThinking', 'catastrophizing', 'overgeneralizing'],
     //   },
     // ],
     thoughts: [],
@@ -72,6 +71,9 @@ const store = createStore({
     },
     setThoughtsLoaded(state, payload) {
       state.thoughtsLoaded = payload;
+    },
+    setCurrentThought(state, payload) {
+      state.currentThought = payload;
     },
     deleteThoughtById(state, payload) {
       state.thoughts = state.thoughts.filter(
@@ -141,7 +143,32 @@ const store = createStore({
           ...newThoguht,
         });
         context.commit("setIsLoading", false);
+        newThoguht.id = dataBase.id;
+        newThoguht.createdBy = context.state.user.uid;
         context.commit("addThought", newThoguht);
+      } catch (err) {
+        context.commit("setIsLoading", false);
+        console.log(err.message);
+        throw new Error("Could not add thought");
+      }
+    },
+    async updateThought(
+      context,
+      { thoughtId, original, rephrased, distortions }
+    ) {
+      try {
+        context.commit("setIsLoading", true);
+        const thoughtRef = doc(db, "thoughts", thoughtId);
+
+        await updateDoc(thoughtRef, {
+          original: original,
+          rephrased: rephrased,
+          distortions: distortions,
+        });
+        context.commit("setCurrentThought", null);
+        context.dispatch("getThoughts");
+
+        context.commit("setIsLoading", false);
       } catch (err) {
         context.commit("setIsLoading", false);
         console.log(err.message);
@@ -150,7 +177,7 @@ const store = createStore({
     },
     async getThoughts(context) {
       context.commit("setThoughtsLoaded", false);
-
+      context.state.thoughts = [];
       const querySnapshot = await getDocs(collection(db, "thoughts"));
       await querySnapshot.forEach(async (doc) => {
         const userInfo = await getUserById(doc.data().createdBy);
@@ -180,7 +207,10 @@ const store = createStore({
       const thoughtRef = context.state.thoughts.find(
         (thought) => thought.id === thoughtId
       );
-      context.state.currentThought = JSON.parse(JSON.stringify(thoughtRef));
+      context.commit(
+        "setCurrentThought",
+        JSON.parse(JSON.stringify(thoughtRef))
+      );
     },
   },
   modules: {},

@@ -54,7 +54,7 @@
           <div v-if="error" class="error caption">{{ error }}</div>
         </Transition>
         <tr-button
-          label="Share with the community"
+          :label="editMode ? 'Save Changes' : 'Share with the community'"
           :disabled="!userLogged"
           @click="handleSumbit"
         />
@@ -81,7 +81,7 @@ export default {
     const store = useStore();
     const userLogged = computed(() => store.state.user?.firstName);
     const currentThought = computed(() => store.state.currentThought);
-
+    const editMode = computed(() => currentThought.value !== null);
     const original = ref("");
     const rephrased = ref("");
     const originalDistortions = ref(new Set());
@@ -92,9 +92,10 @@ export default {
       () => {
         original.value = currentThought.value.original;
         rephrased.value = currentThought.value.rephrased;
-        console.log(currentThought.value.distortions);
-        console.log(originalDistortions.value);
-        originalDistortions.value.add(currentThought.value.distortions);
+        originalDistortions.value = new Set();
+        currentThought.value.distortions.forEach((distortion) =>
+          originalDistortions.value.add(distortion)
+        );
       }
     );
     const error = ref("");
@@ -138,16 +139,17 @@ export default {
     function handleSumbit() {
       if (userLogged.value && formIsValid.value) {
         error.value = "";
-        const distObj = {};
-        originalDistortions.value.forEach((distortion) => {
-          distObj[distortion] = "";
-        });
         const payload = {
           original: original.value,
           rephrased: rephrased.value,
-          distortions: distObj,
+          distortions: Array.from(originalDistortions.value),
         };
-        store.dispatch("addThought", payload);
+        if (editMode.value) {
+          payload.thoughtId = currentThought.value.id;
+          store.dispatch("updateThought", payload);
+        } else {
+          store.dispatch("addThought", payload);
+        }
       } else {
         error.value = "Please check the form";
       }
@@ -164,6 +166,7 @@ export default {
       onRephrasedInputChange,
       handleSumbit,
       userLogged,
+      editMode,
     };
   },
 };

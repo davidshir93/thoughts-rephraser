@@ -193,6 +193,16 @@ p,
   }
 }
 
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
 /* On screens that are 870px or less */
 @media screen and (max-width: 870px) {
   * {

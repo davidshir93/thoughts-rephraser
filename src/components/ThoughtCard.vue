@@ -1,5 +1,5 @@
 <template>
-  <div class="thought-card">
+  <div class="thought-card" :class="cardInEditMode ? 'edit-mode' : ''">
     <div class="editing-icons-container" v-if="editableCard">
       <i class="material-icons" @click="deleteThought">delete</i>
       <i class="material-icons" @click="editThought">edit</i>
@@ -13,7 +13,7 @@
     </Transition>
     <div class="distortions-tags-container">
       <TrPill
-        v-for="word in Object.keys(distortions)"
+        v-for="word in distortions"
         :key="word.id"
         :label="DISTORTIONS_NAMES[word]"
         state="regular"
@@ -38,7 +38,7 @@ export default {
     TrTabs,
   },
   props: {
-    id: Number,
+    id: String,
     original: String,
     rephrased: String,
     distortions: Object,
@@ -57,7 +57,11 @@ export default {
 
     const fullName = computed(() => props.firstName + " " + props.lastName);
     const editableCard = computed(
-      () => props.createdBy === store.state.user.uid
+      () => props.createdBy === store.state.user?.uid
+    );
+
+    const cardInEditMode = computed(
+      () => store.state.currentThought?.id === props.id
     );
 
     const deleteThought = async () => {
@@ -77,6 +81,7 @@ export default {
       editableCard,
       deleteThought,
       editThought,
+      cardInEditMode,
     };
   },
 };
@@ -90,12 +95,29 @@ export default {
   align-items: center;
   gap: 1rem;
   padding: 1.33rem;
-  padding-bottom: 2.66rem;
+  padding-bottom: 3rem;
   background-color: var(--secondary-color);
   border-radius: 1rem;
   transition: all 300ms ease;
   height: 100%;
   position: relative;
+  &.edit-mode {
+    pointer-events: none;
+    &::after {
+      width: 100%;
+      height: 100%;
+      content: "Thought is in Edit Mode";
+      z-index: 11;
+      animation: fadeIn 300ms ease forwards;
+      background-color: var(--bg-color);
+      position: absolute;
+      top: 0;
+      border-radius: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
   .editing-icons-container {
     opacity: 0;
     position: absolute;
