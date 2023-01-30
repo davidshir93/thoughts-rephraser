@@ -10,6 +10,7 @@
           name="original"
           id="original"
           rows="5"
+          v-model="original"
           @input="onOriginalInputChange"
         ></textarea>
         <div class="distortions-tags-container">
@@ -32,6 +33,7 @@
           name="rephrased"
           id="rephrased"
           rows="5"
+          v-model="rephrased"
           @input="onRephrasedInputChange"
         ></textarea>
         <div class="distortions-tags-container">
@@ -65,7 +67,7 @@
 import TrPill from "./TrPill.vue";
 import TrButton from "./TrButton.vue";
 import { DISTORTIONS_DICTIONARY, DISTORTIONS_NAMES } from "../const";
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useStore } from "vuex";
 
 export default {
@@ -76,17 +78,28 @@ export default {
   },
   emits: ["click"],
   setup() {
+    const store = useStore();
+    const userLogged = computed(() => store.state.user?.firstName);
+    const currentThought = computed(() => store.state.currentThought);
+
     const original = ref("");
     const rephrased = ref("");
     const originalDistortions = ref(new Set());
     const rephrasedDistortions = ref(new Set());
 
+    watch(
+      () => store.state.currentThought,
+      () => {
+        original.value = currentThought.value.original;
+        rephrased.value = currentThought.value.rephrased;
+        console.log(currentThought.value.distortions);
+        console.log(originalDistortions.value);
+        originalDistortions.value.add(currentThought.value.distortions);
+      }
+    );
     const error = ref("");
 
     const keyWords = Object.keys(DISTORTIONS_DICTIONARY);
-    const store = useStore();
-
-    const userLogged = computed(() => store.state.user?.firstName);
 
     function checkDistortionsInText(source, text) {
       if (source === "original") originalDistortions.value.clear();
@@ -123,10 +136,6 @@ export default {
       return false;
     });
     function handleSumbit() {
-      console.log("submitting form with");
-      console.log("original", original.value);
-      console.log("rephrased", rephrased.value);
-      console.log("distortions", originalDistortions.value);
       if (userLogged.value && formIsValid.value) {
         error.value = "";
         const distObj = {};
@@ -177,7 +186,7 @@ export default {
     height: 100%;
     align-items: start;
 
-    @media (min-width: 900px) {
+    @media (min-width: 1200px) {
       grid-template-columns: repeat(2, 1fr);
     }
   }
@@ -198,20 +207,14 @@ export default {
     display: flex;
     gap: 0.66rem;
     flex-wrap: wrap;
-    padding: 0.66rem 0;
+    margin: 0.33rem 0;
+    min-height: 1.66rem;
   }
   .bottom {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-
-    // .right-side {
-    //   display: flex;
-    //   justify-content: flex-end;
-    //   align-items: center;
-    //   gap: 0.66rem;
-    // }
   }
 }
 
