@@ -1,18 +1,20 @@
 <template>
   <div class="home">
-    <TrButton :disabled="!user" label="Add A Thought" />
     <new-thought-form></new-thought-form>
     <div v-show="thoughtsLoaded" class="thoguhts-grid-container">
-      <ThoughtCard
-        v-for="thought in thoughts"
-        :key="thought.id"
-        :id="thought.id"
-        :original="thought.original"
-        :rephrased="thought.rephrased"
-        :distortions="thought.distortions"
-        :firstName="thought.firstName"
-        :lastName="thought.lastName"
-      />
+      <TransitionGroup name="list" class="thought-card">
+        <ThoughtCard
+          v-for="thought in thoughts"
+          :key="thought.id"
+          :id="thought.id"
+          :original="thought.original"
+          :rephrased="thought.rephrased"
+          :distortions="thought.distortions"
+          :firstName="thought.firstName"
+          :lastName="thought.lastName"
+          :createdBy="thought.createdBy"
+        />
+      </TransitionGroup>
     </div>
   </div>
 </template>
@@ -20,7 +22,6 @@
 <script>
 // @ is an alias to /src
 import ThoughtCard from "@/components/ThoughtCard.vue";
-import TrButton from "@/components/TrButton.vue";
 import NewThoughtForm from "@/components/NewThoughtForm.vue";
 import { useStore } from "vuex";
 import { computed } from "vue";
@@ -43,7 +44,6 @@ export default {
   name: "HomeView",
   components: {
     ThoughtCard,
-    TrButton,
     NewThoughtForm,
   },
 };
@@ -62,7 +62,7 @@ export default {
   }
 }
 
-@media (min-width: 900px) {
+@media (min-width: 1200px) {
   .thoguhts-grid-container {
     grid-template-columns: repeat(3, 1fr);
   }

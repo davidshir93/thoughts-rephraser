@@ -11,7 +11,7 @@ import {
 } from "firebase/auth";
 // import firebase from "firebase/compat/app";
 import db from "../firebase/config";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 
 const store = createStore({
   state: {
@@ -45,6 +45,7 @@ const store = createStore({
     // ],
     thoughts: [],
     thoughtsLoaded: false,
+    currentThought: null,
   },
   getters: {},
   mutations: {
@@ -56,14 +57,12 @@ const store = createStore({
     },
     setUser(state, payload) {
       state.user = payload;
-      console.log("user state changed:", state.user);
     },
     enrichUserData(state, payload) {
       state.user = {
         ...state.user,
         ...payload,
       };
-      console.log("user enriched and now looks like this:", state.user);
     },
     addThought(state, payload) {
       state.thoughts.unshift(payload);
@@ -74,10 +73,14 @@ const store = createStore({
     setThoughtsLoaded(state, payload) {
       state.thoughtsLoaded = payload;
     },
+    deleteThoughtById(state, payload) {
+      state.thoughts = state.thoughts.filter(
+        (thoguht) => thoguht.id !== payload
+      );
+    },
   },
   actions: {
     async signup(context, { firstName, lastName, email, password }) {
-      console.log("signup action called", firstName, lastName, email, password);
       const res = await createUserWithEmailAndPassword(auth, email, password);
       const dataBase = db.collection("users").doc(res.user.uid);
       await dataBase.set({
@@ -92,7 +95,6 @@ const store = createStore({
       }
     },
     async login(context, { email, password }) {
-      console.log("login action called");
       context.commit("setIsLoading", true);
       const res = await signInWithEmailAndPassword(auth, email, password);
       if (res) {
@@ -130,7 +132,6 @@ const store = createStore({
         firstName: context.state.user.firstName,
         lastName: context.state.user.lastName,
       };
-      // debugger;
       try {
         context.commit("setIsLoading", true);
         const dataBase = db.collection("thoughts").doc();
@@ -153,7 +154,6 @@ const store = createStore({
       const querySnapshot = await getDocs(collection(db, "thoughts"));
       await querySnapshot.forEach(async (doc) => {
         const userInfo = await getUserById(doc.data().createdBy);
-        console.log(userInfo);
         context.state.thoughts.push({
           id: doc.data().thoughtId,
           createdBy: doc.data().createdBy,
@@ -164,9 +164,23 @@ const store = createStore({
           rephrased: doc.data().rephrased,
           distortions: doc.data().distortions,
         });
-        // console.log(doc.id, " => ", doc.data());
       });
       context.commit("setThoughtsLoaded", true);
+    },
+    async deleteThoguht(context, thoughtId) {
+      try {
+        await deleteDoc(doc(db, "thoughts", thoughtId));
+        context.commit("deleteThoughtById", thoughtId);
+      } catch (error) {
+        console.error(error);
+        console.error("could not delete thought ", thoughtId);
+      }
+    },
+    editThoguht(context, thoughtId) {
+      const thoughtRef = context.state.thoughts.find(
+        (thought) => thought.id === thoughtId
+      );
+      context.state.currentThought = JSON.parse(JSON.stringify(thoughtRef));
     },
   },
   modules: {},

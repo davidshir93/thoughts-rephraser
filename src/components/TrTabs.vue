@@ -49,7 +49,6 @@ export default {
   setup(props, { emit }) {
     props = reactive(props);
     const localTabs = reactive(props.tabs);
-    console.log(localTabs);
     return {
       localTabs,
       onClick(newTab) {
